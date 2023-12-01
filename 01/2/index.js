@@ -35,6 +35,10 @@ const NUMBER_WORDS = [
   "nine",
 ];
 
+const REVERSED_NUMBER_WORDS = NUMBER_WORDS.map((word) =>
+  word.split("").reverse().join("")
+);
+
 // Get the first digit of a string where that first digit could be either an
 // actual digit or a word spelling a number from one through nine.
 //
@@ -76,10 +80,8 @@ function getFirstDigit(str, numberWords) {
 function firstAndLastDigits(str) {
   const firstDigit = getFirstDigit(str, NUMBER_WORDS);
   const lastDigit = getFirstDigit(
-    // Reverse the input string
     str.split("").reverse().join(""),
-    // Also reverse the number words
-    NUMBER_WORDS.map((word) => word.split("").reverse().join(""))
+    REVERSED_NUMBER_WORDS
   );
 
   return `${firstDigit}${lastDigit}`;

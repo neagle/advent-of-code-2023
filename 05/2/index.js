@@ -31,8 +31,7 @@ the initial seed numbers?
 const input = await Deno.readTextFile("../input");
 // const input = await Deno.readTextFile("../short-input");
 
-function parseMap(str) {}
-
+// Parse a string of seed range pairs into an array of { start, length } objects
 function parseSeeds(str) {
   const seeds = str
     .split(/(\d+ \d+)/)
@@ -47,12 +46,14 @@ function parseSeeds(str) {
   return seeds;
 }
 
+// Grab the seeds
 const seeds = parseSeeds(
   input.match(/seeds: (?<numbers>[\d\s]*)/).groups.numbers.trim()
 );
 
 console.log("seeds", seeds);
 
+// Parse the maps from the input into { name, numbers } objects
 const mapMatches = input.matchAll(
   /(?<name>[a-z\-]*) map:\n(?<numbers>[\d\s\n]*)/g
 );
@@ -62,6 +63,7 @@ for (const match of mapMatches) {
   const { name, numbers } = match.groups;
   maps.push({
     name,
+    // transform the numbers string into an array of ranges
     ranges: numbers
       .trim()
       .split("\n")
@@ -78,14 +80,19 @@ for (const match of mapMatches) {
 
 // console.log("maps", maps);
 
+// Apply a map to an incoming number and produce an outcome.
 function applyMap(num, map) {
+  // For each range in a map, check if the incoming number falls inside it
   for (let i = 0; i < map.ranges.length; i += 1) {
     const range = map.ranges[i];
     if (num >= range.source && num <= range.source + range.length) {
+      // If so, map the incoming number to its destination
       return range.destination + (num - range.source);
     }
   }
 
+  // If the incoming number doesn't fall within a range, it maps to the same
+  // outgoing number
   return num;
 }
 
@@ -94,10 +101,14 @@ function applyMap(num, map) {
 const lowest = Math.min(
   ...seeds.map(({ start, length }) => {
     console.log("start, length", start, length);
+
+    // Store the first mapped value as our initial minimum
     let min = maps.reduce(applyMap, start);
+
+    // Iterate through the seed range and check each location value to see if it
+    // should be the new min
     for (let i = start + 1; i < start + length; i += 1) {
       const location = maps.reduce(applyMap, i);
-      // console.log("location", i, location);
       if (location < min) {
         min = location;
       }

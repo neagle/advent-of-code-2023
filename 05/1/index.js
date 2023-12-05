@@ -152,8 +152,7 @@ numbers?
 const input = await Deno.readTextFile("../input");
 // const input = await Deno.readTextFile("../short-input");
 
-function parseMap(str) {}
-
+// Grab the seeds
 const seeds = input
   .match(/seeds: (?<numbers>[\d\s]*)/)
   .groups.numbers.trim()
@@ -162,6 +161,7 @@ const seeds = input
 
 // console.log("seeds", seeds);
 
+// Parse the maps from the input into { name, numbers } objects
 const mapMatches = input.matchAll(
   /(?<name>[a-z\-]*) map:\n(?<numbers>[\d\s\n]*)/g
 );
@@ -171,6 +171,7 @@ for (const match of mapMatches) {
   const { name, numbers } = match.groups;
   maps.push({
     name,
+    // transform the numbers string into an array of ranges
     ranges: numbers
       .trim()
       .split("\n")
@@ -187,14 +188,19 @@ for (const match of mapMatches) {
 
 // console.log("maps", maps);
 
+// Apply a map to an incoming number and produce an outcome.
 function applyMap(num, map) {
+  // For each range in a map, check if the incoming number falls inside it
   for (let i = 0; i < map.ranges.length; i += 1) {
     const range = map.ranges[i];
     if (num >= range.source && num <= range.source + range.length) {
+      // If so, map the incoming number to its destination
       return range.destination + (num - range.source);
     }
   }
 
+  // If the incoming number doesn't fall within a range, it maps to the same
+  // outgoing number
   return num;
 }
 

@@ -120,8 +120,11 @@ function quadratic(time, record) {
   const b = time * -1;
   const c = record;
 
-  const sqrt = Math.sqrt(Math.pow(b, 2) - 4 * a * c);
-  return [(b * -1 - sqrt) / (2 * a), (b * -1 + sqrt) / (2 * a)];
+  // Use 1 & -1 to accomplish the ± (plus/minus) in the quadratic equation
+  return [1, -1].reduce((result, i) => {
+    result.push((b * -1 - Math.sqrt(Math.pow(b, 2) - 4 * a * c) * i) / (2 * a));
+    return result;
+  }, []);
 }
 
 function winningTimes([time, record]) {

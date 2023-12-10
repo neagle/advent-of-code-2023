@@ -39,6 +39,8 @@ const histories = input
   .map((history) => history.split(" ").map(Number));
 // console.log("histories", histories);
 
+// A recursive function that will keep calculating history layers (rows of the
+// differences between the previous row) until it reaches all zeroes.
 function analyzeHistory(history) {
   if (!Array.isArray(history[0])) {
     history = [history];
